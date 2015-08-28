@@ -28,27 +28,32 @@ public class Controller : MonoBehaviour {
 
         if (wallJumping == 0.0f) {
             if (axis != 0.0f) {
-                float sign = Mathf.Sign(velocity.x);
-
-                if (Mathf.Abs(velocity.x) < maxWalkingVelocity) {
-                    velocity.x += axis * walkingAcceleration * Time.deltaTime;
-                    if (Mathf.Abs(velocity.x) > maxWalkingVelocity) {
-                        velocity.x = maxWalkingVelocity * sign;
-                    }
-                } else {
-                    velocity.x += axis * runningAcceleration * Time.deltaTime;
-                    if (Mathf.Abs(velocity.x) > maxVelocity) {
-                        velocity.x = maxVelocity * sign;
+                if (againstWall == 0.0f || axis == againstWall) {
+                    if (Mathf.Abs(velocity.x) < maxWalkingVelocity) {
+                        velocity.x += axis * walkingAcceleration * Time.deltaTime;
+                        if (Mathf.Abs(velocity.x) > maxWalkingVelocity) {
+                            velocity.x = maxWalkingVelocity * axis;
+                        }
+                    } else {
+                        velocity.x += axis * runningAcceleration * Time.deltaTime;
+                        if (Mathf.Abs(velocity.x) > maxVelocity) {
+                            velocity.x = maxVelocity * axis;
+                        }
                     }
                 }
-            } else if (grounded) {
+            } else if (grounded || againstWall != 0.0f) {
                 velocity.x = 0.0f;
             }
         } else {
-            velocity.x += wallJumping * wallJumpAcceleration * Time.deltaTime;
-            if (Mathf.Abs(velocity.x) > maxWallJumpVelocity) {
-                velocity.x = maxWallJumpVelocity;
+            if (againstWall != 0.0f) {
+                velocity.x = 0.0f;
                 wallJumping = 0.0f;
+            } else {
+                velocity.x += wallJumping * wallJumpAcceleration * Time.deltaTime;
+                if (Mathf.Abs(velocity.x) > maxWallJumpVelocity) {
+                    velocity.x = wallJumping * maxWallJumpVelocity;
+                    wallJumping = 0.0f;
+                }
             }
         }
 
@@ -101,10 +106,13 @@ public class Controller : MonoBehaviour {
     }
 
     private void OnCollisionExit2D(Collision2D collision) {
-        if (grounded) {
-            grounded = false;
-            doubleJumped = false;
-            againstWall = 0.0f;
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")) {
+            if (collision.contacts[0].normal == Vector2.up) {
+                grounded = false;
+                doubleJumped = false;
+            } else if (collision.contacts[0].normal != -Vector2.up) {
+                againstWall = 0.0f;
+            }
         }
     }
 }
