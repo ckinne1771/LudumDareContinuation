@@ -15,6 +15,7 @@ public class Controller : MonoBehaviour {
     private Vector2 velocity = new Vector2(0.0f, 0.0f);
     private bool grounded = false;
     private bool jumping = false;
+    private bool doubleJumped = false;
     private float timer = 0.0f;
 
     private void Update() {
@@ -45,6 +46,12 @@ public class Controller : MonoBehaviour {
             }
         } else {
             velocity.y -= gravity * Time.deltaTime;
+
+            if (!doubleJumped && Input.GetButtonDown("Jump")) {
+                doubleJumped = true;
+                jumping = true;
+                velocity.y = jumpVelocity;
+            }
         }
 
         if (jumping) {
@@ -66,6 +73,7 @@ public class Controller : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")) {
             grounded = true;
+            doubleJumped = true;
             velocity.y = 0.0f;
         }
     }
@@ -73,6 +81,7 @@ public class Controller : MonoBehaviour {
     private void OnCollisionExit2D(Collision2D collision) {
         if (grounded) {
             grounded = false;
+            doubleJumped = false;
         }
     }
 }
