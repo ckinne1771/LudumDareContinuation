@@ -15,6 +15,8 @@ public class Controller : MonoBehaviour {
     [SerializeField] private float wallJumpAcceleration;
     [SerializeField] private float maxWallJumpVelocity;
 
+	public static bool facingRight = true;
+
     private Vector2 velocity = new Vector2(0.0f, 0.0f);
     private bool grounded = false;
     private bool jumping = false;
@@ -91,6 +93,14 @@ public class Controller : MonoBehaviour {
         }
 
         transform.Translate(velocity * Time.deltaTime);
+
+		if (axis == -1) {
+			facingRight = false;
+		}
+		if (axis == 1) {
+			facingRight = true;
+		}
+
     }
     
     private void OnCollisionEnter2D(Collision2D collision) {

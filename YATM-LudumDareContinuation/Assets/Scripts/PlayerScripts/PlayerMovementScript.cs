@@ -8,19 +8,25 @@ public class PlayerMovementScript : MonoBehaviour {
 
 	private bool jump = false;
 	private bool doubleJump = false;
+
+	public static bool facingRight;
 	// Use this for initialization
 	void Start () {
-	
+		facingRight = true;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
 		if (Input.GetKey (KeyCode.D)) {
+			Debug.Log (facingRight.ToString ());
+			facingRight = true;
 			float newX = transform.position.x + (1.0f * speed * Time.deltaTime);
 			transform.position = new Vector3 (newX, transform.position.y, transform.position.z);
 		}
 		if (Input.GetKey (KeyCode.A)) {
+			Debug.Log (facingRight.ToString ());
+			facingRight = false;
 			float newX = transform.position.x - (1.0f * speed * Time.deltaTime);
 			transform.position = new Vector3 (newX, transform.position.y, transform.position.z);
 		}
