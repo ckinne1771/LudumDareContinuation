@@ -5,7 +5,7 @@ public class ThrowingKnifeScript : MonoBehaviour {
 
 	public float speed = 20.0f;
 
-
+	Renderer renderer;
 	private bool startRight = true;
 	// Use this for initialization
 	void Start () {
@@ -28,6 +28,7 @@ public class ThrowingKnifeScript : MonoBehaviour {
 		if (startRight == false) {
 			transform.Translate (Vector2.left * speed * Time.deltaTime);
 		}
+
 	}
 
 	public void moveLeft()
@@ -35,5 +36,9 @@ public class ThrowingKnifeScript : MonoBehaviour {
 		transform.Translate (Vector2.left * speed * Time.deltaTime);
 	}
 
+	void OnBecameInvisible()
+	{
+		Destroy (gameObject);
+	}
 
 }
